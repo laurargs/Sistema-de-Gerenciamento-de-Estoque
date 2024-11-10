@@ -1,0 +1,71 @@
+class Produto:
+    def __init__(self, nome, categoria, quantidade, preco, localizacao):
+        self.nome = nome
+        self.categoria = categoria
+        self.quantidade = quantidade
+        self.preco = preco
+        self.localizacao = localizacao
+
+class Estoque:
+    def __init__(self):
+        self.produtos = {}
+
+    def adicionar_produto(self, produto):
+        self.produtos[produto.nome] = produto
+
+    def atualizar_estoque(self, nome, quantidade):
+        if nome in self.produtos:
+            self.produtos[nome].quantidade += quantidade
+            return f"Estoque de {nome} atualizado para {self.produtos[nome].quantidade}."
+        else:
+            return "Produto não encontrado no estoque."
+
+# Função para cadastrar novos produtos
+def cadastrar_produto(estoque, nome, categoria, quantidade, preco, localizacao):
+    produto = Produto(nome, categoria, quantidade, preco, localizacao)
+    estoque.adicionar_produto(produto)
+    return f"Produto {nome} cadastrado com sucesso."
+
+# Função para consultar informações de um produto específico
+def consultar_produto(estoque, nome):
+    produto = estoque.produtos.get(nome)
+    if produto:
+        return vars(produto)  # Retorna os atributos do produto como um dicionário
+    return "Produto não encontrado."
+
+# Função para registrar uma entrada de produtos no estoque
+def registrar_entrada(estoque, nome, quantidade):
+    return estoque.atualizar_estoque(nome, quantidade)
+
+# Função para registrar uma saída de produtos no estoque
+def registrar_saida(estoque, nome, quantidade):
+    if nome in estoque.produtos and estoque.produtos[nome].quantidade >= quantidade:
+        return estoque.atualizar_estoque(nome, -quantidade)
+    else:
+        return "Quantidade insuficiente no estoque ou produto não encontrado."
+
+# Função para gerar relatório de produtos com estoque baixo
+def relatorio_estoque_baixo(estoque, limite):
+    relatorio = {nome: vars(prod) for nome, prod in estoque.produtos.items() if prod.quantidade <= limite}
+    return relatorio if relatorio else "Todos os produtos estão acima do limite de estoque baixo."
+
+# Execução de Testes 
+
+if __name__ == "__main__":
+    # Inicializando o estoque
+    estoque = Estoque()
+    
+    # Cadastro de produtos
+    print(cadastrar_produto(estoque, "Mouse", "Periféricos", 60, 29.90, "A1"))
+    print(cadastrar_produto(estoque, "Teclado", "Periféricos", 30, 48.50, "A2"))
+    
+    # Consulta de produtos
+    print(consultar_produto(estoque, "Mouse"))
+    print(consultar_produto(estoque, "Teclado"))
+    
+    # Registro de entrada e saída
+    print(registrar_entrada(estoque, "Mouse", 20))  # Entrada de 20 Mouses
+    print(registrar_saida(estoque, "Mouse", 5))     # Saída de 5 Mouses
+    
+    # Gera um relatório de estoque baixo (limite de 30 unidades)
+    print(relatorio_estoque_baixo(estoque, 30))
