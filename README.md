@@ -1,1 +1,1 @@
-# Sistema-de-Gerenciamento-de-Estoque
+ Desenvolvimento de um Sistema de Gerenciamento de Estoque
